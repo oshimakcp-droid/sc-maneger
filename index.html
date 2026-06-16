@@ -1685,15 +1685,18 @@
                     const a = item.a;
                     const i = item.i;
                     const initial = (a.name || '?').charAt(0);
-                    return '<div onclick="openClientSession(' + i + ')" class="bg-white rounded-2xl shadow-md border border-slate-200 p-4 flex items-center gap-3 cursor-pointer hover:shadow-lg hover:border-blue-300 transition" style="touch-action:manipulation;">' +
-                        '<div class="w-12 h-12 rounded-2xl bg-slate-100 flex items-center justify-center overflow-hidden flex-shrink-0">' +
-                            (a.photo ? '<img src="' + a.photo + '" style="width:100%;height:100%;object-fit:cover;">' : '<span class="text-xl font-black text-slate-400">' + initial + '</span>') +
+                    return '<div class="bg-white rounded-2xl shadow-md border border-slate-200 p-4 flex items-center gap-3 group" style="touch-action:manipulation;">' +
+                        '<div onclick="openClientSession(' + i + ')" class="min-w-0 flex-1 cursor-pointer hover:opacity-70 transition" style="display:flex;gap:12px;align-items:center;">' +
+                            '<div class="w-12 h-12 rounded-2xl bg-slate-100 flex items-center justify-center overflow-hidden flex-shrink-0">' +
+                                (a.photo ? '<img src="' + a.photo + '" style="width:100%;height:100%;object-fit:cover;">' : '<span class="text-xl font-black text-slate-400">' + initial + '</span>') +
+                            '</div>' +
+                            '<div class="min-w-0 flex-1">' +
+                                '<p class="font-black text-slate-800 truncate">' + (a.name || '-') + '</p>' +
+                                '<p class="text-[10px] text-slate-400 font-bold uppercase truncate">' + (a.sport || '-') + (a.pos ? ' / ' + a.pos : '') + '</p>' +
+                                '<p class="text-[10px] text-slate-500 font-bold truncate">連絡先: ' + (a.contact || '-') + '</p>' +
+                            '</div>' +
                         '</div>' +
-                        '<div class="min-w-0 flex-1">' +
-                            '<p class="font-black text-slate-800 truncate">' + (a.name || '-') + '</p>' +
-                            '<p class="text-[10px] text-slate-400 font-bold uppercase truncate">' + (a.sport || '-') + (a.pos ? ' / ' + a.pos : '') + '</p>' +
-                            '<p class="text-[10px] text-slate-500 font-bold truncate">連絡先: ' + (a.contact || '-') + '</p>' +
-                        '</div>' +
+                        '<button onclick="deleteClient(' + i + ')" class="w-8 h-8 rounded-lg bg-red-100 hover:bg-red-200 text-red-600 font-black text-lg flex items-center justify-center flex-shrink-0 opacity-0 group-hover:opacity-100 transition" style="margin-left:auto;">×</button>' +
                     '</div>';
                 }).join('');
                 return '<section class="space-y-3">' +
@@ -1708,6 +1711,16 @@
 
         function openClientSession(index) {
             selectAthlete(index);
+        }
+
+        function deleteClient(index) {
+            const a = athletes[index];
+            const name = a.name || 'クライアント';
+            if (confirm('「' + name + '」を削除しますか？\nこの操作は取り消せません。')) {
+                athletes.splice(index, 1);
+                saveAll();
+                renderClientListView();
+            }
         }
 
 
